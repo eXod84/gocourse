@@ -6,14 +6,14 @@ import (
 )
 
 type Node struct {
-	Value  string
+	Value  int
 	Data   string
 	Left   *Node
 	Right  *Node
 	parent *Node
 }
 
-func (n *Node) Insert(value, data string) error {
+func (n *Node) Insert(value int, data string) error {
 	if n == nil {
 		return errors.New("Must be not empty")
 	}
@@ -43,7 +43,7 @@ func (n *Node) Insert(value, data string) error {
 	return nil
 }
 
-func (n *Node) Find(value string) (*Node, bool) {
+func (n *Node) Find(value int) (*Node, bool) {
 	if n.Value == value {
 		return n, true
 	}
@@ -75,7 +75,7 @@ func (n *Node) Replace(replacement *Node) {
 	}
 }
 
-func (n *Node) Delete(value string) error {
+func (n *Node) Delete(value int) error {
 	if n == nil {
 		return errors.New("Empty")
 	}
@@ -114,7 +114,7 @@ type Tree struct {
 	Root *Node
 }
 
-func (t *Tree) Insert(value, data string) error {
+func (t *Tree) Insert(value int, data string) error {
 	if t.Root == nil {
 		t.Root = &Node{Value: value, Data: data}
 		return nil
@@ -122,14 +122,14 @@ func (t *Tree) Insert(value, data string) error {
 	return t.Root.Insert(value, data)
 }
 
-func (t *Tree) Find(s string) (*Node, bool) {
+func (t *Tree) Find(s int) (*Node, bool) {
 	if t.Root == nil {
 		return nil, false
 	}
 	return t.Root.Find(s)
 }
 
-func (t *Tree) Delete(s string) error {
+func (t *Tree) Delete(s int) error {
 
 	if t.Root == nil {
 		return errors.New("Cannot delete from an empty tree")
@@ -152,26 +152,48 @@ func (t *Tree) Traverse(n *Node, f func(*Node)) {
 	t.Traverse(n.Right, f)
 }
 
+func print(n *Node, level int) {
+	if n != nil {
+		format := ""
+
+		for i := 0; i < level; i++ {
+			format += "       "
+		}
+
+		level++
+
+		print(n.Left, level)
+		fmt.Printf(format+"%d [\n", n.Value)
+		print(n.Right, level)
+	}
+}
+
 func main() {
-	n := &Node{Value: "f", Data: "123"}
+	// n := &Node{Value: 5, Data: "123"}
 
-	fmt.Println(n)
+	// fmt.Println(n)
 
-	n.Insert("a", "321")
+	// n.Insert(2, "321")
 
-	fmt.Println(n)
+	// fmt.Println(n)
 
-	fmt.Println(n.Find("a"))
+	// fmt.Println(n.Find(2))
 
-	n.Delete("a")
+	// n.Delete(2)
 
-	fmt.Println(n)
+	// fmt.Println(n)
 
 	t := &Tree{}
+	t.Insert(10, "1")
+	t.Insert(5, "2")
+	t.Insert(15, "3")
+	t.Insert(3, "3")
+	t.Insert(7, "3")
+	t.Insert(6, "3")
+	t.Insert(2, "3")
+	t.Insert(1, "3")
+	t.Insert(0, "3")
 
-	t.Insert("f", "1")
-	t.Insert("a", "2")
-	t.Insert("z", "3")
+	print(t.Root, 0)
 
-	t.Traverse(t.Root, func(n *Node) { fmt.Println(n.Value, ": ", n.Data, " | ") })
 }
